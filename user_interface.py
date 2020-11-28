@@ -1,9 +1,9 @@
 """ This module opens a popup box to get the 
     input value of alarm time from the user    
 """
+from tkinter import *
+import tkinter as tk
 
-
-from import_libs import *
 from main_function import *
 
 def show_entry_fields():

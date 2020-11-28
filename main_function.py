@@ -1,4 +1,27 @@
-from import_libs import *
+"""Python script to set an alarm for a specific time.
+   When the alarm goes off, a random youtube video will be opened.
+   The possible youtube video URLs are taken from "youtube_alarm_videos.txt"
+   A Log file will be created indicating all the steps that has been completed.
+"""
+
+"""Authors: David  
+            Deval  
+            Jonatas 
+            Saurabh  
+"""
+
+"""
+   This module imports all the required libraries
+"""
+
+import datetime
+import time
+import random
+import webbrowser
+import smtplib
+import requests
+
+
 from user_interface import *
 from check_input import *
 from logger import *
@@ -11,7 +34,7 @@ def my_main_function(alarm_time):
         args(string): The input alarm_time is a string input
     """
     
-    #This Try and Eexcept block will raise exception if the input value is not correct
+    #This Try and Except block will raise exception if the input value is not correct
     while True:
         try:
             alarm_input_list = [int(n) for n in alarm_time.split(":")]
@@ -21,7 +44,7 @@ def my_main_function(alarm_time):
             else:
                 raise ValueError
         except ValueError:
-            logging.critical("ERROR: Please enter the time in correct format")
+            logging.critical("FAIL: Please enter the time in correct format")
             break 
     
     seconds_hms = [3600, 60, 1] # Number of seconds in an Hour, Minute, and Second
@@ -33,18 +56,24 @@ def my_main_function(alarm_time):
     time_diff_seconds = alarm_seconds - current_time_seconds
     if time_diff_seconds < 0:
         time_diff_seconds += 86400 # number of seconds in a day
-    print("Alarm set to go off in %s" % datetime.timedelta(seconds=time_diff_seconds))
     
-    time.sleep(time_diff_seconds)
-    logging.debug("Wake up!: The time has come!")
-    
+     
     #To read the input text file
     with open("youtube_alarm_videos.txt", "r") as alarm_file:
          videos = alarm_file.readlines()
         
-    #Opens a random youtube video from a set of youtibe videos
-    webbrowser.open(random.choice(videos))
-    logging.debug("PASS: The youtube video has been opened in the web browser")
+    #Opens a random youtube video from a set of youtube videos
+    x=random.choice(videos)
+    
+    try:
+       r = requests.head(x)
+       print("Alarm set to go off in %s" % datetime.timedelta(seconds=time_diff_seconds))
+       time.sleep(time_diff_seconds)
+       logging.debug("Wake up!: The time has come!")
+       webbrowser.open(x)
+    except requests.ConnectionError:
+       logging.debug("FAIL: The input link is invalid")
+    
 
     # creates SMTP session 
     #s = smtplib.SMTP('smtp.gmail.com', 587) 
