@@ -10,18 +10,9 @@
             Saurabh  
 """
 
-"""
-   This module imports all the required libraries
-"""
 
+#import all the required libraries
 import datetime
-import time
-import random
-import webbrowser
-import smtplib
-import requests
-
-
 from user_interface import *
 from check_input import *
 from logger import *
@@ -34,12 +25,13 @@ def my_main_function(alarm_time):
         args(string): The input alarm_time is a string input
     """
     
-    #This Try and Except block will raise exception if the input value is not correct
+    #This Try and Except block will raise exception if the input value is incorrect
     while True:
         try:
             alarm_input_list = [int(n) for n in alarm_time.split(":")]
             if check_alarm_input(alarm_input_list):
                 logging.debug("PASS: The time is in correct format")
+                check_link_format()
                 break
             else:
                 raise ValueError
@@ -58,40 +50,4 @@ def my_main_function(alarm_time):
         time_diff_seconds += 86400 # number of seconds in a day
     
      
-    #To read the input text file
-    with open("youtube_alarm_videos.txt", "r") as alarm_file:
-         videos = alarm_file.readlines()
-        
-    #Opens a random youtube video from a set of youtube videos
-    x=random.choice(videos)
-    
-    try:
-       r = requests.head(x)
-       print("Alarm set to go off in %s" % datetime.timedelta(seconds=time_diff_seconds))
-       time.sleep(time_diff_seconds)
-       logging.debug("Wake up!: The time has come!")
-       webbrowser.open(x)
-    except requests.ConnectionError:
-       logging.debug("FAIL: The input link is invalid")
-    
 
-    # creates SMTP session 
-    #s = smtplib.SMTP('smtp.gmail.com', 587) 
-  
-    # start TLS for security 
-    #s.starttls() 
-  
-    # Authentication 
-    #s.login("sender@gmail.com", "sender_password") 
-  
-    # message to be sent 
-    #message = "Message_you_need_to_send"
-  
-    # sending the mail 
-    #s.sendmail("sender@gmail.com", "receiver@gmail.com", message) 
-  
-    # terminating the session 
-    #s.quit() 
-    
-
-    
